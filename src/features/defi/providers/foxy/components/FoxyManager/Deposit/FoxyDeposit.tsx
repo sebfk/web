@@ -5,8 +5,8 @@ import { KnownChainIds } from '@shapeshiftoss/types'
 import { DepositValues } from 'features/defi/components/Deposit/Deposit'
 import { DefiParams, DefiQueryParams } from 'features/defi/contexts/DefiManagerProvider/DefiCommon'
 import { AnimatePresence } from 'framer-motion'
-import { useFoxyApr } from 'plugins/foxPage/hooks/useFoxyApr'
-import { useEffect, useReducer } from 'react'
+import { FoxPageContext } from 'plugins/foxPage/context'
+import { useContext, useEffect, useReducer } from 'react'
 import { useTranslate } from 'react-polyglot'
 import { useSelector } from 'react-redux'
 import { Route, Switch, useLocation } from 'react-router-dom'
@@ -51,14 +51,15 @@ export const FoxyDeposit = ({ api }: FoxyDepositProps) => {
   // user info
   const chainAdapterManager = useChainAdapters()
   const { state: walletState } = useWallet()
-  const { foxyApr, loaded: isFoxyAprLoaded } = useFoxyApr()
+  const foxPageData = useContext(FoxPageContext)
+  const foxyApr = foxPageData?.foxyApr
   const loading = useSelector(selectPortfolioLoading)
 
   useEffect(() => {
     ;(async () => {
       try {
         const chainAdapter = await chainAdapterManager.get(KnownChainIds.EthereumMainnet)
-        if (!(walletState.wallet && contractAddress && isFoxyAprLoaded && chainAdapter)) return
+        if (!(walletState.wallet && contractAddress && Boolean(foxyApr) && chainAdapter)) return
         const [address, foxyOpportunity] = await Promise.all([
           chainAdapter.getAddress({ wallet: walletState.wallet }),
           api.getFoxyOpportunityByStakingAddress(contractAddress),
@@ -73,7 +74,7 @@ export const FoxyDeposit = ({ api }: FoxyDepositProps) => {
         console.error('FoxyDeposit error:', error)
       }
     })()
-  }, [api, chainAdapterManager, contractAddress, walletState.wallet, foxyApr, isFoxyAprLoaded])
+  }, [api, chainAdapterManager, contractAddress, walletState.wallet, foxyApr])
 
   const getDepositGasEstimate = async (deposit: DepositValues) => {
     if (!state.userAddress || !assetReference) return

@@ -1,5 +1,6 @@
 import { FoxyProvider } from 'features/defi/contexts/FoxyProvider/FoxyProvider'
 import { YearnProvider } from 'features/defi/contexts/YearnProvider/YearnProvider'
+import { FoxPageProvider } from 'plugins/foxPage/provider'
 import React from 'react'
 import { Route, useLocation } from 'react-router-dom'
 import { NotFound } from 'pages/NotFound/NotFound'
@@ -28,17 +29,19 @@ export function DefiManagerProvider({ children }: DefiManagerProviderProps) {
     <DefiManagerContext.Provider value={null}>
       <YearnProvider>
         <FoxyProvider>
-          {children}
-          {background && (
-            <Route
-              path='/defi/:earnType/:provider'
-              render={({ match: { params } }) => {
-                const { provider } = params
-                const Module = DefiModules[provider as DefiProvider]
-                return <DefiModal>{Module ? <Module /> : <NotFound />}</DefiModal>
-              }}
-            />
-          )}
+          <FoxPageProvider>
+            {children}
+            {background && (
+              <Route
+                path='/defi/:earnType/:provider'
+                render={({ match: { params } }) => {
+                  const { provider } = params
+                  const Module = DefiModules[provider as DefiProvider]
+                  return <DefiModal>{Module ? <Module /> : <NotFound />}</DefiModal>
+                }}
+              />
+            )}
+          </FoxPageProvider>
         </FoxyProvider>
       </YearnProvider>
     </DefiManagerContext.Provider>

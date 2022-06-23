@@ -2,6 +2,7 @@ import { Plugins } from 'plugins'
 import { FoxIcon } from 'components/Icons/FoxIcon'
 
 import { FoxPage } from './foxPage'
+import { FoxPageProvider } from './provider'
 
 export function register(): Plugins {
   return [
@@ -12,22 +13,15 @@ export function register(): Plugins {
         icon: <FoxIcon />,
         routes: [
           {
-            path: '/fox',
+            href: '/fox',
+            path: '/fox/(fox|foxy)?',
             label: 'navBar.foxToken',
-            main: () => <FoxPage />,
+            main: () => (
+              <FoxPageProvider>
+                <FoxPage />
+              </FoxPageProvider>
+            ),
             icon: <FoxIcon />,
-            routes: [
-              {
-                path: '/fox',
-                label: 'navBar.foxToken',
-                main: () => <FoxPage />,
-              },
-              {
-                path: '/foxy',
-                label: 'navBar.foxToken',
-                main: () => <FoxPage />,
-              },
-            ],
           },
         ],
       },

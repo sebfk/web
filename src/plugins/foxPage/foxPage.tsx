@@ -19,7 +19,7 @@ import { AssetId } from '@shapeshiftoss/caip'
 import { foxyAddresses } from '@shapeshiftoss/investor-foxy'
 import { FoxyPath } from 'features/defi/providers/foxy/components/FoxyManager/FoxyCommon'
 import qs from 'qs'
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import { useTranslate } from 'react-polyglot'
 import { useHistory, useLocation } from 'react-router'
 import { AssetMarketData } from 'components/AssetHeader/AssetMarketData'
@@ -45,13 +45,13 @@ import { MainOpportunity } from './components/MainOpportunity'
 import { OtherOpportunities } from './components/OtherOpportunities/OtherOpportunities'
 import { Total } from './components/Total'
 import { TradeOpportunities, TradeOpportunitiesBucket } from './components/TradeOpportunities'
+import { FoxPageContext } from './context'
 import {
   FOX_ASSET_ID,
   foxTradeOpportunitiesBuckets,
   FOXY_ASSET_ID,
   foxyTradeOpportunitiesBuckets,
 } from './FoxCommon'
-import { useFoxyApr } from './hooks/useFoxyApr'
 import { useOtherOpportunities } from './hooks/useOtherOpportunities'
 
 export enum FoxPageRoutes {
@@ -121,7 +121,7 @@ export const FoxPage = () => {
     [cryptoBalanceFox, cryptoBalanceFoxy],
   )
 
-  const { foxyApr, loaded: isFoxyAprLoaded } = useFoxyApr()
+  const foxPageData = useContext(FoxPageContext)
 
   const totalFiatBalance = bnOrZero(fiatBalanceFox).plus(fiatBalanceFoxy).toString()
 
@@ -223,9 +223,9 @@ export const FoxPage = () => {
               <Stack spacing={4} flex='1 1 0%' width='full'>
                 <MainOpportunity
                   assetId={selectedAsset.assetId}
-                  apy={foxyApr ?? ''}
+                  apy={foxPageData?.foxyApr ?? ''}
                   tvl={bnOrZero(foxyBalances.opportunities?.[0]?.tvl).toString()}
-                  isLoaded={!foxyBalances.loading && isFoxyAprLoaded}
+                  isLoaded={!foxyBalances.loading && Boolean(foxPageData?.foxyApr)}
                   balance={cryptoBalances[selectedAssetIndex]}
                   onClick={() => {
                     history.push({
