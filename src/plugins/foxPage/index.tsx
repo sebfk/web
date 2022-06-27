@@ -1,8 +1,13 @@
 import { Plugins } from 'plugins'
+import React from 'react'
 import { FoxIcon } from 'components/Icons/FoxIcon'
+import { FoxyAprProvider } from 'context/FoxyAprProvider/FoxyAprProvider'
 
-import { FoxPage } from './foxPage'
-import { FoxPageProvider } from './provider'
+const FoxProvider = React.lazy(() =>
+  import('./provider').then(module => ({ default: module.FoxProvider })),
+)
+
+const FoxPage = React.lazy(() => import('./foxPage').then(module => ({ default: module.FoxPage })))
 
 export function register(): Plugins {
   return [
@@ -17,9 +22,13 @@ export function register(): Plugins {
             path: '/fox/(fox|foxy)?',
             label: 'navBar.foxToken',
             main: () => (
-              <FoxPageProvider>
-                <FoxPage />
-              </FoxPageProvider>
+              <React.Suspense fallback={null}>
+                <FoxProvider>
+                  <FoxyAprProvider>
+                    <FoxPage />
+                  </FoxyAprProvider>
+                </FoxProvider>
+              </React.Suspense>
             ),
             icon: <FoxIcon />,
           },

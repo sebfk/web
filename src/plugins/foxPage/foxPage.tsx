@@ -23,6 +23,7 @@ import { useContext, useMemo } from 'react'
 import { useTranslate } from 'react-polyglot'
 import { useHistory, useLocation } from 'react-router'
 import { AssetMarketData } from 'components/AssetHeader/AssetMarketData'
+import { FoxyAprContext } from 'context/FoxyAprProvider/FoxyAprContext'
 import { useRouteAssetId } from 'hooks/useRouteAssetId/useRouteAssetId'
 import { bnOrZero } from 'lib/bignumber/bignumber'
 import { useFoxyBalances } from 'pages/Defi/hooks/useFoxyBalances'
@@ -45,7 +46,6 @@ import { MainOpportunity } from './components/MainOpportunity'
 import { OtherOpportunities } from './components/OtherOpportunities/OtherOpportunities'
 import { Total } from './components/Total'
 import { TradeOpportunities, TradeOpportunitiesBucket } from './components/TradeOpportunities'
-import { FoxPageContext } from './context'
 import {
   FOX_ASSET_ID,
   foxTradeOpportunitiesBuckets,
@@ -121,7 +121,7 @@ export const FoxPage = () => {
     [cryptoBalanceFox, cryptoBalanceFoxy],
   )
 
-  const foxPageData = useContext(FoxPageContext)
+  const foxyAprData = useContext(FoxyAprContext)
 
   const totalFiatBalance = bnOrZero(fiatBalanceFox).plus(fiatBalanceFoxy).toString()
 
@@ -223,9 +223,9 @@ export const FoxPage = () => {
               <Stack spacing={4} flex='1 1 0%' width='full'>
                 <MainOpportunity
                   assetId={selectedAsset.assetId}
-                  apy={foxPageData?.foxyApr ?? ''}
+                  apy={foxyAprData?.foxyApr ?? ''}
                   tvl={bnOrZero(foxyBalances.opportunities?.[0]?.tvl).toString()}
-                  isLoaded={!foxyBalances.loading && Boolean(foxPageData?.foxyApr)}
+                  isLoaded={!foxyBalances.loading && Boolean(foxyAprData?.foxyApr)}
                   balance={cryptoBalances[selectedAssetIndex]}
                   onClick={() => {
                     history.push({

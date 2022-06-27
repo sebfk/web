@@ -1,8 +1,8 @@
 import { FoxyProvider } from 'features/defi/contexts/FoxyProvider/FoxyProvider'
 import { YearnProvider } from 'features/defi/contexts/YearnProvider/YearnProvider'
-import { FoxPageProvider } from 'plugins/foxPage/provider'
 import React from 'react'
 import { Route, useLocation } from 'react-router-dom'
+import { FoxyAprProvider } from 'context/FoxyAprProvider/FoxyAprProvider'
 import { NotFound } from 'pages/NotFound/NotFound'
 
 import { DefiModal } from '../../components/DefiModal/DefiModal'
@@ -29,7 +29,7 @@ export function DefiManagerProvider({ children }: DefiManagerProviderProps) {
     <DefiManagerContext.Provider value={null}>
       <YearnProvider>
         <FoxyProvider>
-          <FoxPageProvider>
+          <FoxyAprProvider>
             {children}
             {background && (
               <Route
@@ -41,7 +41,7 @@ export function DefiManagerProvider({ children }: DefiManagerProviderProps) {
                 }}
               />
             )}
-          </FoxPageProvider>
+          </FoxyAprProvider>
         </FoxyProvider>
       </YearnProvider>
     </DefiManagerContext.Provider>

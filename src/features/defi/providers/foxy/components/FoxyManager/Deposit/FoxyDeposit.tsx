@@ -5,13 +5,13 @@ import { KnownChainIds } from '@shapeshiftoss/types'
 import { DepositValues } from 'features/defi/components/Deposit/Deposit'
 import { DefiParams, DefiQueryParams } from 'features/defi/contexts/DefiManagerProvider/DefiCommon'
 import { AnimatePresence } from 'framer-motion'
-import { FoxPageContext } from 'plugins/foxPage/context'
 import { useContext, useEffect, useReducer } from 'react'
 import { useTranslate } from 'react-polyglot'
 import { useSelector } from 'react-redux'
 import { Route, Switch, useLocation } from 'react-router-dom'
 import { CircularProgress } from 'components/CircularProgress/CircularProgress'
 import { RouteSteps } from 'components/RouteSteps/RouteSteps'
+import { FoxyAprContext } from 'context/FoxyAprProvider/FoxyAprContext'
 import { useChainAdapters } from 'context/PluginProvider/PluginProvider'
 import { useBrowserRouter } from 'hooks/useBrowserRouter/useBrowserRouter'
 import { useWallet } from 'hooks/useWallet/useWallet'
@@ -51,8 +51,8 @@ export const FoxyDeposit = ({ api }: FoxyDepositProps) => {
   // user info
   const chainAdapterManager = useChainAdapters()
   const { state: walletState } = useWallet()
-  const foxPageData = useContext(FoxPageContext)
-  const foxyApr = foxPageData?.foxyApr
+  const foxyAprData = useContext(FoxyAprContext)
+  const foxyApr = foxyAprData?.foxyApr
   const loading = useSelector(selectPortfolioLoading)
 
   useEffect(() => {

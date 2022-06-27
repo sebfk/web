@@ -2,9 +2,9 @@ import { AssetId, ChainId, ethChainId, toAssetId } from '@shapeshiftoss/caip'
 import { DefiType, FoxyApi, WithdrawInfo } from '@shapeshiftoss/investor-foxy'
 import { KnownChainIds } from '@shapeshiftoss/types'
 import { useFoxy } from 'features/defi/contexts/FoxyProvider/FoxyProvider'
-import { FoxPageContext } from 'plugins/foxPage/context'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { FoxyAprContext } from 'context/FoxyAprProvider/FoxyAprContext'
 import { useChainAdapters } from 'context/PluginProvider/PluginProvider'
 import { useWallet } from 'hooks/useWallet/useWallet'
 import { useWalletSupportsChain } from 'hooks/useWalletSupportsChain/useWalletSupportsChain'
@@ -116,14 +116,14 @@ export function useFoxyBalances(): UseFoxyBalancesReturn {
   } = useWallet()
 
   const { foxy, loading: foxyLoading } = useFoxy()
-  const foxPageData = useContext(FoxPageContext)
+  const foxyAprData = useContext(FoxyAprContext)
   const balances = useSelector(selectPortfolioAssetBalances)
   const balancesLoading = useSelector(selectPortfolioLoading)
 
   const supportsEthereumChain = useWalletSupportsChain({ chainId: ethChainId, wallet })
 
   useEffect(() => {
-    if (!wallet || !supportsEthereumChain || !foxy || !foxPageData?.foxyApr) {
+    if (!wallet || !supportsEthereumChain || !foxy || !foxyAprData?.foxyApr) {
       setLoading(false)
       return
     }
@@ -136,7 +136,7 @@ export function useFoxyBalances(): UseFoxyBalancesReturn {
           balances,
           foxy,
           userAddress,
-          foxPageData?.foxyApr ?? '',
+          foxyAprData?.foxyApr ?? '',
         )
         if (!foxyOpportunities) return
 
@@ -155,7 +155,7 @@ export function useFoxyBalances(): UseFoxyBalancesReturn {
     balancesLoading,
     chainAdapterManager,
     supportsEthereumChain,
-    foxPageData?.foxyApr,
+    foxyAprData?.foxyApr,
   ])
 
   const makeFiatAmount = useCallback(

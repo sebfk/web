@@ -9,7 +9,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react'
 import { FoxPageContext } from 'plugins/foxPage/context'
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 import { useTranslate } from 'react-polyglot'
 import { Amount } from 'components/Amount/Amount'
 import { AssetIcon } from 'components/AssetIcon'
@@ -19,6 +19,10 @@ import { AllEarnOpportunities } from 'components/StakingVaults/AllEarnOpportunit
 import { RawText } from 'components/Text'
 import { selectAssetById } from 'state/slices/selectors'
 import { useAppSelector } from 'state/store'
+
+const FoxProvider = React.lazy(() =>
+  import('plugins/foxPage/provider').then(module => ({ default: module.FoxProvider })),
+)
 
 const DefiHeader = () => {
   const translate = useTranslate()
@@ -79,7 +83,11 @@ const FoxFarmCTA = () => {
 export const StakingVaults = () => {
   return (
     <Main titleComponent={<DefiHeader />}>
-      <FoxFarmCTA />
+      <React.Suspense fallback={null}>
+        <FoxProvider>
+          <FoxFarmCTA />
+        </FoxProvider>
+      </React.Suspense>
       <AllEarnOpportunities />
     </Main>
   )

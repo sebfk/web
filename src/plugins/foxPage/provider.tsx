@@ -1,13 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import { FoxPageContext } from './context'
 import { getFarmingApr } from './utils/getFarmingApr'
-import { getFoxyApr } from './utils/getFoxyApr'
 import { getGovernanceData, ParsedBoardroomGovernanceResult } from './utils/getGovernanceData'
 import { getLpApr } from './utils/getLpApr'
 
-export const FoxPageProvider = ({ children }: { children: React.ReactNode }) => {
-  const [foxyApr, setFoxyApr] = useState<string | null>(null)
+export const FoxProvider = React.memo(({ children }: { children: React.ReactNode }) => {
   const [lpApr, setLpApr] = useState<string | null>(null)
   const [farmingApr, setFarmingApr] = useState<string | null>(null)
   const [governanceData, setGovernanceData] = useState<ParsedBoardroomGovernanceResult[] | null>(
@@ -15,9 +13,8 @@ export const FoxPageProvider = ({ children }: { children: React.ReactNode }) => 
   )
 
   useEffect(() => {
-    Promise.all([getFoxyApr(), getLpApr(), getFarmingApr(), getGovernanceData()]).then(
-      ([foxyApr, lpApr, farmingApr, governanceData]) => {
-        setFoxyApr(foxyApr)
+    Promise.all([getLpApr(), getFarmingApr(), getGovernanceData()]).then(
+      ([lpApr, farmingApr, governanceData]) => {
         setLpApr(lpApr)
         setFarmingApr(farmingApr)
         setGovernanceData(governanceData)
@@ -27,12 +24,11 @@ export const FoxPageProvider = ({ children }: { children: React.ReactNode }) => 
 
   const value = useMemo(
     () => ({
-      foxyApr,
       lpApr,
       farmingApr,
       governanceData,
     }),
-    [foxyApr, lpApr, farmingApr, governanceData],
+    [lpApr, farmingApr, governanceData],
   )
   return <FoxPageContext.Provider value={value}>{children}</FoxPageContext.Provider>
-}
+})
